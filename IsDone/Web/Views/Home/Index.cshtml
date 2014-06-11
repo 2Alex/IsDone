@@ -103,14 +103,14 @@
         });
 
         function getBooks(count) {
-            // Получаем последнюю цифру цисла.
+            // Получаем последнюю цифру числа.
             var units = count < 10
                 ? count
                 : count % 10;
             var name;
-            if (count === 1)
+            if (units === 1)
                 name = "книга";
-            if (2 <= count && count <= 4)
+            else if (2 <= count && count <= 4)
                 name = "книги";
             else
                 name = "книг";
