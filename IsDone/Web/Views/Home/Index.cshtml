@@ -9,34 +9,86 @@
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
     <style>
-        div {           
+        li:hover {
+            background-color: lightgoldenrodyellow;
+            cursor: pointer;
+        }
+
+        div {
             float: left;
             border: gray 1px solid;
             margin: 10px;
             padding: 10px;
             box-shadow: 0 0 10px black;
             border-radius: 5px;
-        }        
+            width: 240px;
+        }
     </style>
+    <script src="~/Scripts/knockout-3.1.0.debug.js"></script>
 </head>
 <body>
     <div>
         <h3>Прошлое</h3>
-        <ol>
-            <li>Book 1</li>
+        <ol data-bind="foreach: doneBooks">
+            <li data-bind="text: name, click: $parent.change"></li>
         </ol>
     </div>
     <div>
         <h3>Настоящее</h3>
-        <ol>
-            <li>Book 2</li>
-        </ol>
-    </div>    
-    <div>
-        <h3>Будущее</h3>
-        <ol>
-            <li>Book 3</li>
+        <ol data-bind="foreach: inProgressBooks">
+            <li data-bind="text: name, click: $parent.change"></li>
         </ol>
     </div>
+    <div>
+        <h3>Будущее</h3>
+        <ol data-bind="foreach: futureBooks">
+            <li data-bind="text: name, click: $parent.change"></li>
+        </ol>
+    </div>
+    <script>
+        var statuses = {
+            done: 1,
+            inProgress: 2,
+            planned: 3
+        }
+        var books = [
+            { name: 'Book1', status: ko.observable(statuses.done) },
+            { name: 'Book2', status: ko.observable(statuses.done) },
+            { name: 'Book3', status: ko.observable(statuses.inProgress) },
+            { name: 'Book4', status: ko.observable(statuses.planned) },
+            { name: 'Book5', status: ko.observable(statuses.planned) },
+            { name: 'Book6', status: ko.observable(statuses.planned) }
+        ];
+        var viewModel = {};
+
+        viewModel.books = ko.observableArray(books);
+
+        viewModel.doneBooks = ko.computed(function () {
+            return viewModel.books().filter(function (book) {
+                return book.status() === statuses.done;
+            });
+        });
+
+        viewModel.inProgressBooks = ko.computed(function () {
+            return viewModel.books().filter(function (book) {
+                return book.status() === statuses.inProgress;
+            });
+        });
+
+        viewModel.futureBooks = ko.computed(function () {
+            return viewModel.books().filter(function (book) {
+                return book.status() === statuses.planned;
+            });
+        });
+
+        viewModel.change = function (book) {
+            if (book.status() === statuses.planned)
+                book.status(statuses.inProgress);
+            else if (book.status() === statuses.inProgress)
+                book.status(statuses.done);
+        }
+
+        ko.applyBindings(viewModel);
+    </script>
 </body>
 </html>
