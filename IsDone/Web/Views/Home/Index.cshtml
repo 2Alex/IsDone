@@ -26,69 +26,77 @@
     </style>
     <script src="~/Scripts/knockout-3.1.0.debug.js"></script>
 </head>
-<body>
-    <div>
-        <h3>Прошлое</h3>
-        <ol data-bind="foreach: doneBooks">
-            <li data-bind="text: name, click: $parent.change"></li>
-        </ol>
-    </div>
-    <div>
-        <h3>Настоящее</h3>
-        <ol data-bind="foreach: inProgressBooks">
-            <li data-bind="text: name, click: $parent.change"></li>
-        </ol>
-    </div>
-    <div>
-        <h3>Будущее</h3>
-        <ol data-bind="foreach: futureBooks">
-            <li data-bind="text: name, click: $parent.change"></li>
-        </ol>
-    </div>
-    <script>
-        var statuses = {
-            done: 1,
-            inProgress: 2,
-            planned: 3
-        }
-        var books = [
-            { name: 'Book1', status: ko.observable(statuses.done) },
-            { name: 'Book2', status: ko.observable(statuses.done) },
-            { name: 'Book3', status: ko.observable(statuses.inProgress) },
-            { name: 'Book4', status: ko.observable(statuses.planned) },
-            { name: 'Book5', status: ko.observable(statuses.planned) },
-            { name: 'Book6', status: ko.observable(statuses.planned) }
-        ];
-        var viewModel = {};
+    <body>
+        Завершено: <span data-bind="text: compeleted"></span>%
+        <div>
+            <h3>Прошлое</h3>
+            <ol data-bind="foreach: doneBooks">
+                <li data-bind="text: name, click: $parent.changeBookStatus"></li>
+            </ol>
+        </div>
+        <div>
+            <h3>Настоящее</h3>
+            <ol data-bind="foreach: inProgressBooks">
+                <li data-bind="text: name, click: $parent.changeBookStatus"></li>
+            </ol>
+        </div>
+        <div>
+            <h3>Будущее</h3>
+            <ol data-bind="foreach: futureBooks">
+                <li data-bind="text: name, click: $parent.changeBookStatus"></li>
+            </ol>
+        </div>
+        <script>
+            var statuses = {
+                done: 1,
+                inProgress: 2,
+                planned: 3
+            }
+            var books = [
+                { name: 'Book1', status: ko.observable(statuses.done) },
+                { name: 'Book2', status: ko.observable(statuses.done) },
+                { name: 'Book3', status: ko.observable(statuses.inProgress) },
+                { name: 'Book4', status: ko.observable(statuses.planned) },
+                { name: 'Book5', status: ko.observable(statuses.planned) },
+                { name: 'Book6', status: ko.observable(statuses.planned) }
+            ];
+            var viewModel = {};
 
-        viewModel.books =books;
+            viewModel.books =books;
 
-        viewModel.doneBooks = ko.computed(function () {
-            return viewModel.books.filter(function (book) {
-                return book.status() === statuses.done;
+            viewModel.doneBooks = ko.computed(function () {
+                return viewModel.books.filter(function (book) {
+                    return book.status() === statuses.done;
+                });
             });
-        });
 
-        viewModel.inProgressBooks = ko.computed(function () {
-            return viewModel.books.filter(function (book) {
-                return book.status() === statuses.inProgress;
+            viewModel.inProgressBooks = ko.computed(function () {
+                return viewModel.books.filter(function (book) {
+                    return book.status() === statuses.inProgress;
+                });
             });
-        });
 
-        viewModel.futureBooks = ko.computed(function () {
-            return viewModel.books.filter(function (book) {
-                return book.status() === statuses.planned;
+            viewModel.futureBooks = ko.computed(function () {
+                return viewModel.books.filter(function (book) {
+                    return book.status() === statuses.planned;
+                });
             });
-        });
 
-        viewModel.change = function (book) {
-            if (book.status() === statuses.planned)
-                book.status(statuses.inProgress);
-            else if (book.status() === statuses.inProgress)
-                book.status(statuses.done);
-        }
+            viewModel.changeBookStatus = function (book) {
+                if (book.status() === statuses.planned)
+                    book.status(statuses.inProgress);
+                else if (book.status() === statuses.inProgress)
+                    book.status(statuses.done);
+            }
 
-        ko.applyBindings(viewModel);
-    </script>
-</body>
+            viewModel.compeleted = ko.computed( function() {
+                var proportion = viewModel.doneBooks().length
+                    /
+                    (viewModel.books.length);                   
+                return Math.ceil(proportion * 100);
+            });
+
+            ko.applyBindings(viewModel);
+        </script>
+    </body>
 </html>
