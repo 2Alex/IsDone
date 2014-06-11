@@ -61,22 +61,22 @@
         ];
         var viewModel = {};
 
-        viewModel.books = ko.observableArray(books);
+        viewModel.books =books;
 
         viewModel.doneBooks = ko.computed(function () {
-            return viewModel.books().filter(function (book) {
+            return viewModel.books.filter(function (book) {
                 return book.status() === statuses.done;
             });
         });
 
         viewModel.inProgressBooks = ko.computed(function () {
-            return viewModel.books().filter(function (book) {
+            return viewModel.books.filter(function (book) {
                 return book.status() === statuses.inProgress;
             });
         });
 
         viewModel.futureBooks = ko.computed(function () {
-            return viewModel.books().filter(function (book) {
+            return viewModel.books.filter(function (book) {
                 return book.status() === statuses.planned;
             });
         });
