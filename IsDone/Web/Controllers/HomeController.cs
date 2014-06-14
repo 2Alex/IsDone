@@ -7,6 +7,11 @@ namespace Web.Controllers
         public ViewResult Index()
         {
             return View();
+        }  
+        
+        public ViewResult Maket()
+        {
+            return View();
         }
     }
 }
